@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
+@{
+    ViewData["Title"] = "Manage User Roles";
+    var userRoles = ViewBag.UserRoles as IList<string>;
+}
+
+<h2>Manage Roles for @ViewBag.UserName</h2>
+
+<h3>Current Roles:</h3>
+<ul>
+    @foreach (var role in userRoles)
+    {
+        <li>
+            @role
+            <form asp-action="RemoveRoleFromUser" method="post" class="d-inline">
+                <input type="hidden" name="userId" value="@ViewContext.RouteData.Values["userId"]" />
+                <input type="hidden" name="roleName" value="@role" />
+                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+            </form>
+        </li>
+    }
+</ul>
+
+<h3>Available Roles:</h3>
+<ul>
+    @foreach (var role in Model)
+    {
+        if (!userRoles.Contains(role.Name))
+        {
+            <li>
+                @role.Name
+                <form asp-action="AddRoleToUser" method="post" class="d-inline">
+                    <input type="hidden" name="userId" value="@ViewContext.RouteData.Values["userId"]" />
+                    <input type="hidden" name="roleName" value="@role.Name" />
+                    <button type="submit" class="btn btn-success btn-sm">Add</button>
+                </form>
+            </li>
+        }
+    }
+</ul>
+
+<a asp-action="Users" class="btn btn-secondary mt-3">Back to Users</a>
+
